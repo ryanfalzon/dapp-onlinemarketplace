@@ -47,19 +47,11 @@ app.controller("administratorController", function ($scope, $timeout, $q){
         console.log(response);
         await $scope.RefreshManagerList();
     };
-
+    
     $scope.RefreshManagerList = async function(){
-        var deferred = $q.defer();
-        App.getStoreManagers(function(response){
-            deferred.resolve(response);
-            console.log(response);
-        })
-        $timeout(async function(){
-            App.getStoreManagers().then(function(response){
-                $scope.managers.content = response;
-            });
-        }, 2000);
-        console.log($scope.managers.content);
+        var response = await App.getStoreManagers();
+        console.log(response);
+        $scope.managers.content = response;
     };
 
     $scope.Setup = async function(){
@@ -104,6 +96,7 @@ app.controller("manageStoresController", function ($scope, $http){
     };
 
     $scope.Setup = async function(){
+        await App.start();
         $scope.RefreshStoreList();
     };
 
@@ -117,6 +110,7 @@ app.controller("manageProductsController", function ($scope, $http){
     $scope.imageUrl = "";
     $scope.priceperUnit = 0;
     $scope.quantity = 0;
+    $scope.stores = [];
     $scope.products = [];
 
     $scope.AddProduct = async function(){

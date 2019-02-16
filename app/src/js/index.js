@@ -82,8 +82,9 @@ const App = {
 
     addStore: async function(store){
         try{
+            console.log(store);
             var instance = await this.storeManager.deployed();
-            var response = await instance.AddStore(store.name. store.description, store.imageUrl, {from: this.account});
+            var response = await instance.CreateStore(store.name, store.description, store.imageUrl, {from: this.account});
             return response;
         }
         catch(error){
@@ -107,7 +108,7 @@ const App = {
     getStoresByOwner: async function(){
         try{
             var instance = await this.storeManager.deployed();
-            var response = await instance.storesMappedToOwner(this.account);
+            var response = await instance.GetAllStoresByOwner(this.account);
             var stores = [];
             response.forEach(function(storeId){
                 instance.storesMappedToId(storeId).then(function(store){

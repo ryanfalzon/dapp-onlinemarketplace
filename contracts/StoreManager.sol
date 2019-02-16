@@ -98,6 +98,11 @@ contract StoreManager{
         emit StoreDeleted(id);
     }
 
+    // Function to return all stores who are assigned to an owner
+    function GetAllStoresByOwner(address storeOwner) view public returns(bytes32[] memory){
+        return storesMappedToOwner[storeOwner];
+    }
+
     // Function to return all stores
     function GetAllStores() view public returns(bytes32[] memory){
         return allStores;
