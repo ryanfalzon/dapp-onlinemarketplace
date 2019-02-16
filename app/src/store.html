@@ -1,0 +1,20 @@
+﻿<header>
+    <h1>{{storeName}}</h1>
+</header>
+
+<div style="padding-top: 10px">
+    <ul class="list-group">
+        <li class="list-group-item" ng-repeat="item in items">
+            <div style="width: 30%; display: inline-block; vertical-align: top">
+                <img src="{{item.image}}" style="max-height: 100%; max-width: 100%">
+            </div>
+
+            <div style="width: 69%; display: inline-block; padding-left: 20px">
+                <h3>{{item.name}}</h3>
+                <p>{{item.description}}</p>
+                <p>Ξ{{item.price}}</p>
+                <button type="button" class="btn btn-success">Add To Cart</button>
+            </div>
+        </li>
+    </ul>
+</div>

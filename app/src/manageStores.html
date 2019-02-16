@@ -1,0 +1,32 @@
+﻿<header>
+    <h1>Store Manager Panel</h1>
+</header>
+
+<form class="jumbotron">
+    <div class="form-group">
+        <label for="name">Store Name:</label>
+        <input type="text" class="form-control" id="name" ng-model="name" placeholder="Enter Name">
+    </div>
+    <div class="form-group">
+        <label for="description">Description:</label>
+        <textarea class="form-control" rows="5" id="description" style="resize: none" ng-model="description" placeholder="Description of Store"></textarea>
+    </div>
+    <div class="form-group">
+        <label for="image">Image URL:</label>
+        <input type="url" class="form-control" id="image" ng-model="image" placeholder="Enter Image URL">
+    </div>
+    <button type="submit" class="btn btn-primary" ng-click="addStore()">Submit</button>
+</form>
+
+<div class="jumbotron">
+    <h3>Store List</h3>
+
+    <ul class="list-group">
+        <li class="list-group-item" ng-repeat="store in stores">
+            {{store.name}}
+            <span class="pull-right">
+                <button class="btn btn-xs btn-danger" ng-click="removeStore($index)">Remove <span class="glyphicon glyphicon-trash"></span></button>
+            </span>
+        </li>
+    </ul>
+</div>

@@ -1,0 +1,25 @@
+﻿<header>
+    <h1>Administrator Panel</h1>
+</header>
+
+<form class="jumbotron">
+    <div class="form-group">
+        <label for="address">Store Manager Address:</label>
+        <input type="text" class="form-control" id="address" ng-model="address" placeholder="Enter Address">
+    </div>
+    <button type="submit" class="btn btn-primary" ng-click="AddStoreManager()">Add</button>
+    <button type="submit" class="btn btn-primary" ng-click="RefreshManagerList()">List</button>
+</form>
+
+<div class="jumbotron">
+    <h3>Store Manager List</h3>
+
+    <ul class="list-group">
+        <li class="list-group-item" ng-repeat="manager in managers.content">
+            {{manager}}
+            <span class="pull-right">
+                <button class="btn btn-xs btn-danger" ng-click="RemoveStoreManager(manager)">Remove <span class="glyphicon glyphicon-trash"></span></button>
+            </span>
+        </li>
+    </ul>
+</div>

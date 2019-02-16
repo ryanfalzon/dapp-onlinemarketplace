@@ -1,0 +1,46 @@
+﻿<header>
+    <h1>Product Manager Panel</h1>
+</header>
+
+<form class="jumbotron">
+    <div class="form-group">
+        <label for="store">Store Name:</label>
+        <select class="form-control" id="store" ng-model="store" ng-init="store='1'">
+            <option ng-repeat="store in stores" value="{{store.id}}">{{store.name}}</option>
+        </select>
+    </div>
+    <div class="form-group">
+        <label for="name">Item Name:</label>
+        <input type="text" class="form-control" id="name" ng-model="name" placeholder="Enter Name">
+    </div>
+    <div class="form-group">
+        <label for="description">Description:</label>
+        <textarea class="form-control" rows="5" id="description" style="resize: none" ng-model="description" placeholder="Description of Store"></textarea>
+    </div>
+    <div class="form-group">
+        <label for="image">Image URL:</label>
+        <input type="text" class="form-control" id="image" ng-model="image" placeholder="Enter Image URL">
+    </div>
+    <div class="form-group">
+        <label for="price">Price:</label>
+        <input type="number" class="form-control" id="name" ng-model="price" placeholder="Price in ETH">
+    </div>
+    <div class="form-group">
+        <label for="quantity">Quantity:</label>
+        <input type="number" class="form-control" id="quantity" ng-model="quantity" placeholder="Enter Quantity">
+    </div>
+    <button type="submit" class="btn btn-primary" ng-click="addItem()">Submit</button>
+</form>
+
+<div class="jumbotron">
+    <h3>Store List</h3>
+
+    <ul class="list-group">
+        <li class="list-group-item" ng-repeat="item in items">
+            {{item.name}}
+            <span class="pull-right">
+                <button class="btn btn-xs btn-danger" ng-click="removeItem($index)">Remove <span class="glyphicon glyphicon-trash"></span></button>
+            </span>
+        </li>
+    </ul>
+</div>
