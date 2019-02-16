@@ -8,7 +8,7 @@ Install [Geth](https://geth.ethereum.org/downloads/)
 
 Install [Python](https://www.python.org/downloads/)
 
-Install [C++ Build Tools](https://www.microsoft.com/en-us/download/details.aspx?id=8279
+Install [C++ Build Tools](https://www.microsoft.com/en-us/download/details.aspx?id=8279)
 
 Install [Metamask](https://metamask.io/)
 
