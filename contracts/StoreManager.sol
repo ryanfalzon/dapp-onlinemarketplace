@@ -7,10 +7,11 @@ contract StoreManager{
     // Holds a stores data
     struct Store{
         bytes32 id;
-        address owner;
+        address payable owner;
         string name;
         string description;
         string imageUrl;
+        uint balance;
     }
 
     // Holds a products data
@@ -37,7 +38,8 @@ contract StoreManager{
     event StoreDeleted(bytes32 id);
     event ProductCreated(bytes32 id, bytes32 storeId, string name, string description, string imageUrl, uint pricePerUnit, uint availableUnits);
     event ProductDeleted(bytes32 id, bytes32 storeId);
-    event ProductSold(bytes32 id, bytes32 storeId, uint pricePerUnit, uint quantity, uint totalPrice, address buyer, uint newQuantity);
+    event ProductSold(bytes32 id, bytes32 storeId, uint quantity, uint totalPrice, uint newQuantity);
+    event BalanceWithdrawn(bytes32 storeId, uint total);
 
     // Constructor
     constructor(address marketplaceAddress) public{
@@ -49,7 +51,7 @@ contract StoreManager{
 
         // Create the store
         bytes32 id = keccak256(abi.encodePacked(msg.sender, name, description, imageUrl, now));
-        Store memory store = Store(id, msg.sender, name, description, imageUrl);
+        Store memory store = Store(id, msg.sender, name, description, imageUrl, 0);
 
         // Put store in respective arrays
         storesMappedToOwner[msg.sender].push(store.id);
@@ -63,6 +65,13 @@ contract StoreManager{
 
     // Function to delete a store
     function DeleteStore(bytes32 id) RequireStoreOwnerStatus(id) public{
+
+        // Withdraw balance of store
+        uint storeBalance = storesMappedToId[id].balance;
+        if(storeBalance > 0){
+            msg.sender.transfer(storeBalance);
+            emit BalanceWithdrawn(id, storeBalance);
+        }
 
         // Find all products of the store
         bytes32[] storage storeProducts = productsMappedToStore[id];
@@ -147,6 +156,39 @@ contract StoreManager{
     // Function that returns all products
     function GetAllProducts(bytes32 storeId) view public returns(bytes32[] memory){
         return productsMappedToStore[storeId];
+    }
+
+    // Function to transfer ether from buyer to store owner
+    function BuyProduct(bytes32 id, bytes32 storeId, uint quantity, uint totalPrice, uint newQuantity) payable public{
+        // Checks need to process function
+        Product memory product = productsMappedToId[id];
+        require(msg.value >= totalPrice, "Insufficient Funds Sent");
+        require(msg.sender.balance >= msg.value, "Insufficient Funds In Account");
+        require(product.availableUnits >= quantity, "Quantity Needed Is Larger Than Available");
+
+        // Give change to message sender
+        if(msg.value > totalPrice){
+            uint change = msg.value - totalPrice;
+            msg.sender.transfer(change);
+        }
+
+        // Process transactions
+        productsMappedToId[id].availableUnits = newQuantity;
+        storesMappedToId[id].balance += totalPrice;
+        emit ProductSold(id, storeId, quantity, totalPrice, newQuantity);
+    }
+
+    // Function to withdraw store balance and send to owner
+    function WithdrawStoreBalance(bytes32 id) public{        
+
+        // Check if store balance is greater than 0
+        require(storesMappedToId[id].balance > 0, "Store Balance Is 0");
+
+        // Transfer store balance to store owner
+        uint balance = storesMappedToId[id].balance;
+        msg.sender.transfer(balance);
+        emit BalanceWithdrawn(id, balance);
+        storesMappedToId[id].balance = 0;
     }
 
     // Function to check if message sender is a manager

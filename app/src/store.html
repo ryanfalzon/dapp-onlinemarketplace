@@ -1,19 +1,25 @@
 ﻿<header>
     <h1>{{storeName}}</h1>
+    <button type="submit" class="btn btn-primary" ng-click="GetAllProducts()">List</button>
 </header>
 
 <div style="padding-top: 10px">
     <ul class="list-group">
-        <li class="list-group-item" ng-repeat="item in items">
+        <li class="list-group-item" ng-repeat="product in products">
             <div style="width: 30%; display: inline-block; vertical-align: top">
-                <img src="{{item.image}}" style="max-height: 100%; max-width: 100%">
+                <img src="{{product.imageUrl}}" style="max-height: 100%; max-width: 100%">
             </div>
 
             <div style="width: 69%; display: inline-block; padding-left: 20px">
-                <h3>{{item.name}}</h3>
-                <p>{{item.description}}</p>
-                <p>Ξ{{item.price}}</p>
-                <button type="button" class="btn btn-success">Add To Cart</button>
+                <h3>{{product.name}}</h3>
+                <p>{{product.description}}</p>
+                <p>Ξ{{product.pricePerUnit}}</p>
+                <div class="form-group row">
+                    <div class="col-xs-4">
+                        <input type="number" ng-maxlength="{{product.availableUnits.words[0]}}" class="form-control" id="quantity" ng-model="quantity" placeholder="Enter Quantity">
+                    </div>
+                    <button type="button" class="btn btn-success">Buy <span class="glyphicon glyphicon-shopping-cart"></span></button>
+                </div>
             </div>
         </li>
     </ul>

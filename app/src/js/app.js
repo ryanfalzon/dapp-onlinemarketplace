@@ -83,8 +83,8 @@ app.controller("manageStoresController", function ($scope, $http){
         await $scope.RefreshStoreList();
     };
 
-    $scope.RemoveStore = async function(storeId){
-        var response = await App.removeStore(storeId);
+    $scope.RemoveStore = async function(store){
+        var response = await App.removeStore(store.id);
         console.log(response);
         await $scope.RefreshStoreList();
     };
@@ -104,22 +104,23 @@ app.controller("manageStoresController", function ($scope, $http){
 });
 
 app.controller("manageProductsController", function ($scope, $http){
-    $scope.storeId = "";
+    $scope.store = "";
     $scope.name = "";
     $scope.description = "";
     $scope.imageUrl = "";
-    $scope.priceperUnit = 0;
+    $scope.price = 0;
     $scope.quantity = 0;
     $scope.stores = [];
     $scope.products = [];
+    $scope.productListStore = "";
 
     $scope.AddProduct = async function(){
         var data = {
-            storeId: $scope.storeId,
+            storeId: $scope.store,
             name: $scope.name,
             description: $scope.description,
             imageUrl: $scope.imageUrl,
-            pricePerUnit: $scope.pricePerUnit,
+            pricePerUnit: $scope.price,
             quantity: $scope.quantity
         }
 
@@ -134,56 +135,76 @@ app.controller("manageProductsController", function ($scope, $http){
         await $scope.RefreshProductsList();
     };
 
-    $scope.RemoveProduct = async function(productId){
-        var response = await App.removeProduct(productId);
+    $scope.RemoveProduct = async function(product){
+        var response = await App.removeProduct(product.id, $scope.productListStore);
         console.log(response);
         await $scope.RefreshProductsList();
     };
 
+    $scope.GetAllStores = async function(){
+        var response = await App.getStoresByOwner();
+        $scope.stores = response;
+        console.log(response);
+    };
+
     $scope.RefreshProductsList = async function(){
-        var response = await App.getProductsByStore();
+        var response = await App.getProductsByStore($scope.productListStore);
         $scope.products = response;
         console.log(response);
     };
 
     $scope.Setup = async function(){
-        $scope.RefreshProductsList();
+        await App.start();
+        $scope.GetAllStores();
+        //$scope.RefreshProductsList();
     };
 
     $scope.Setup();
 });
 
-app.controller("marketplaceController", function ($scope, $http){
-    $scope.RedirectToStore = function(storeId){
-        $scope.stores = [];
+app.controller("marketplaceController", function ($scope, $location){
+    $scope.stores = [];
 
-        $scope.GetAllStores = async function(){
-            var response = await App.getAllStores();
-            console.log(response);
-            $scope.stores = response;
-        };
-    
-        $scope.RedirectToStore = function (store) {
-            $location.path("/store/" + store.id);
-        };
+    $scope.GetAllStores = async function(){
+        var response = await App.getAllStores();
+        console.log(response);
+        $scope.stores = response;
+    };
 
-        $scope.Setup = async function(){
-            $scope.GetAllStores();
-        };
-    
-        $scope.Setup();
-    }
+    $scope.RedirectToStore = function (store) {
+        $location.path("/store/" + store.id);
+    };
+
+    $scope.Setup = async function(){
+        await App.start();
+        $scope.GetAllStores();
+    };
+
+    $scope.Setup();
 });
 
-app.controller("storeController", function ($scope, $http){
-    $scope.BuyProduct = function(productId){
-        $scope.store = {};
-        $scope.products = [];
+app.controller("storeController", function ($scope, $routeParams){
+    $scope.store = {};
+    $scope.products = [];
 
-        $scope.Setup = async function(){
-
-        }
-
-        $scope.Setup();
+    $scope.GetStore = async function(storeId){
+        var response = await App.getStore(storeId);
+        console.log(response);
+        $scope.store = response;
     }
+    
+    $scope.GetAllProducts = async function(){
+        var response = await App.getProductsByStore($scope.store.id);
+        console.log(response);
+        $scope.products = response;
+    }
+
+    $scope.Setup = async function(){
+        await App.start();
+        var storeId = $routeParams.store_id;
+        await $scope.GetStore(storeId);
+        await $scope.GetAllProducts();
+    }
+
+    $scope.Setup();
 });

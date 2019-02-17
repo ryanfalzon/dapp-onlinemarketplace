@@ -13,9 +13,10 @@
     </div>
     <div class="form-group">
         <label for="image">Image URL:</label>
-        <input type="url" class="form-control" id="image" ng-model="image" placeholder="Enter Image URL">
+        <input type="url" class="form-control" id="image" ng-model="imageUrl" placeholder="Enter Image URL">
     </div>
-    <button type="submit" class="btn btn-primary" ng-click="AddStore()">Submit</button>
+    <button type="submit" class="btn btn-primary" ng-click="AddStore()">Submit <span class="glyphicon glyphicon-ok"></span></button>
+    <button type="submit" class="btn btn-primary" ng-click="RefreshStoreList()">List</button>
 </form>
 
 <div class="jumbotron">
@@ -23,9 +24,10 @@
 
     <ul class="list-group">
         <li class="list-group-item" ng-repeat="store in stores">
-            {{store.name}}
+            {{store.name}} (Ξ{{store.balance.words[0]}})
             <span class="pull-right">
-                <button class="btn btn-xs btn-danger" ng-click="removeStore($index)">Remove <span class="glyphicon glyphicon-trash"></span></button>
+                <button class="btn btn-xs btn-info" ng-click="RemoveStore(store)" ng-disabled="store.balance.words[0] == 0">Withdraw <span class="glyphicon glyphicon-download-alt"></span></button>
+                <button class="btn btn-xs btn-danger" ng-click="RemoveStore(store)">Remove <span class="glyphicon glyphicon-trash"></span></button>
             </span>
         </li>
     </ul>

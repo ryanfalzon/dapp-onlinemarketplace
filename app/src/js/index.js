@@ -96,7 +96,19 @@ const App = {
     removeStore: async function(storeId){
         try{
             var instance = await this.storeManager.deployed();
-            var response = await instance.RemoveStore(storeId, {from: this.account});
+            var response = await instance.DeleteStore(storeId, {from: this.account});
+            return response;
+        }
+        catch(error){
+            console.error(error);
+            return false;
+        }
+    },
+
+    getStore: async function(storeId){
+        try{
+            var instance = await this.storeManager.deployed();
+            var response = await instance.storesMappedToId(storeId);
             return response;
         }
         catch(error){
@@ -112,7 +124,9 @@ const App = {
             var stores = [];
             response.forEach(function(storeId){
                 instance.storesMappedToId(storeId).then(function(store){
-                    stores.push(store);
+                    if(store.name !== ''){
+                        stores.push(store);
+                    }
                 });
             });
 
@@ -131,7 +145,9 @@ const App = {
             var stores = [];
             response.forEach(function(storeId){
                 instance.storesMappedToId(storeId).then(function(store){
-                    stores.push(store);
+                    if(store.name !== ''){
+                        stores.push(store);
+                    }
                 });
             });
 
@@ -146,7 +162,7 @@ const App = {
     addProduct: async function(product){
         try{
             var instance = await this.storeManager.deployed();
-            var response = await instance.AddProduct(product.storeId, product.name, product.description, product.imageUrl, product.pricePerUnit, product.quantity, {from: this.account});
+            var response = await instance.CreateProduct(product.storeId, product.name, product.description, product.imageUrl, product.pricePerUnit, product.quantity, {from: this.account});
             return response;
         }
         catch(error){
@@ -155,10 +171,10 @@ const App = {
         }
     },
 
-    removeProduct: async function(productId){
+    removeProduct: async function(productId, storeId){
         try{
             var instance = await this.storeManager.deployed();
-            var response = await instance.RemoveProduct(productId, {from: this.account});
+            var response = await instance.DeleteProduct(productId, storeId, {from: this.account});
             return response;
         }
         catch(error){
@@ -170,11 +186,14 @@ const App = {
     getProductsByStore: async function(storeId){
         try{
             var instance = await this.storeManager.deployed();
-            var response = instance.GetAllProducts(storeId);
+            var response = await instance.GetAllProducts(storeId);
             var products = [];
+            console.log(response);
             response.forEach(function(productId){
-                instance.productsMappedToId(product).then(function(product){
-                    products.push(product);
+                instance.productsMappedToId(productId).then(function(product){
+                    if(product.name !== ''){
+                        products.push(product);
+                    }
                 });
             });
 

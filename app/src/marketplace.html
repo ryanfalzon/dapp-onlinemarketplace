@@ -1,12 +1,13 @@
 ﻿<header>
     <h1>Available Stores</h1>
+    <button type="submit" class="btn btn-primary" ng-click="GetAllStores()">List</button>
 </header>
 
 <div style="padding-top: 30px">
     <div class="col-lg-4" ng-repeat="store in stores">
-        <img class="img-circle" src="{{store.image}}" alt="Generic placeholder image" width="140" height="140">
+        <img class="img-circle" src="{{store.imageUrl}}" alt="Generic placeholder image" width="140" height="140">
         <h2>{{store.name}}</h2>
         <p>{{store.description}}</p>
-        <button type="button" class="btn btn-primary" ng-click="redirectToStore(store)">View Store »</button>
+        <button type="button" class="btn btn-primary" ng-click="RedirectToStore(store)">View Store <span class="glyphicon glyphicon-chevron-right"></span></button>
     </div>
 </div>

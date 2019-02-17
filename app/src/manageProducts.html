@@ -5,7 +5,7 @@
 <form class="jumbotron">
     <div class="form-group">
         <label for="store">Store Name:</label>
-        <select class="form-control" id="store" ng-model="store" ng-init="store='1'">
+        <select class="form-control" id="store" ng-model="store">
             <option ng-repeat="store in stores" value="{{store.id}}">{{store.name}}</option>
         </select>
     </div>
@@ -19,7 +19,7 @@
     </div>
     <div class="form-group">
         <label for="image">Image URL:</label>
-        <input type="text" class="form-control" id="image" ng-model="image" placeholder="Enter Image URL">
+        <input type="text" class="form-control" id="image" ng-model="imageUrl" placeholder="Enter Image URL">
     </div>
     <div class="form-group">
         <label for="price">Price:</label>
@@ -29,17 +29,23 @@
         <label for="quantity">Quantity:</label>
         <input type="number" class="form-control" id="quantity" ng-model="quantity" placeholder="Enter Quantity">
     </div>
-    <button type="submit" class="btn btn-primary" ng-click="addItem()">Submit</button>
+    <button type="submit" class="btn btn-primary" ng-click="AddProduct()">Submit <span class="glyphicon glyphicon-ok"></span></button>
 </form>
 
 <div class="jumbotron">
-    <h3>Store List</h3>
+    <h3>Product List</h3>
+
+    <div class="form-group">
+        <select class="form-control" id="store" ng-model="productListStore" ng-change="RefreshProductsList()">
+            <option ng-repeat="store in stores" value="{{store.id}}">{{store.name}}</option>
+        </select>
+    </div>
 
     <ul class="list-group">
-        <li class="list-group-item" ng-repeat="item in items">
-            {{item.name}}
+        <li class="list-group-item" ng-repeat="product in products">
+            {{product.name}} - {{product.availableUnits}} Left
             <span class="pull-right">
-                <button class="btn btn-xs btn-danger" ng-click="removeItem($index)">Remove <span class="glyphicon glyphicon-trash"></span></button>
+                <button class="btn btn-xs btn-danger" ng-click="RemoveProduct(product)">Remove <span class="glyphicon glyphicon-trash"></span></button>
             </span>
         </li>
     </ul>
