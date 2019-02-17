@@ -28,7 +28,27 @@ const App = {
               gas: 4712388,
               gasPrice: 100000000000
             });
-  
+
+            await this.initView();
+        }
+        catch(error){
+            console.error(error);
+        }
+    },
+
+    initView: async function(){
+        try{
+            var instance = await this.marketplace.deployed();
+
+            var checkAdminResponse = await instance.CheckAdministrator(this.account);
+            if(!checkAdminResponse){
+                $('#adminViewButton').attr('style', 'display: none;');
+            }
+
+            var checkManagerResponse = await instance.CheckManager(this.account);
+            if(!checkManagerResponse){
+                $('#managerViewButton').attr('style', 'display: none;');
+            }
         }
         catch(error){
             console.error(error);
