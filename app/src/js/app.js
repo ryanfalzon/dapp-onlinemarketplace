@@ -187,6 +187,23 @@ app.controller("storeController", function ($scope, $routeParams){
     $scope.store = {};
     $scope.products = [];
 
+    $scope.BuyProduct = async function(product, quantityIndex){
+        var quantity = document.getElementById("quantity" + quantityIndex).value
+
+        if(quantity > 0){
+            var data = {
+                id: product.id,
+                storeId: product.storeId,
+                quantity: quantity,
+                totalPrice: (quantity * product.pricePerUnit),
+                newQuantity: (product.availableUnits - quantity)
+            }
+            
+            var response = await App.buyProduct(data);
+            console.log(response);
+        }
+    }
+
     $scope.GetStore = async function(storeId){
         var response = await App.getStore(storeId);
         console.log(response);

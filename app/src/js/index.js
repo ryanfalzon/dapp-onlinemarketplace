@@ -82,7 +82,6 @@ const App = {
 
     addStore: async function(store){
         try{
-            console.log(store);
             var instance = await this.storeManager.deployed();
             var response = await instance.CreateStore(store.name, store.description, store.imageUrl, {from: this.account});
             return response;
@@ -188,7 +187,6 @@ const App = {
             var instance = await this.storeManager.deployed();
             var response = await instance.GetAllProducts(storeId);
             var products = [];
-            console.log(response);
             response.forEach(function(productId){
                 instance.productsMappedToId(productId).then(function(product){
                     if(product.name !== ''){
@@ -207,8 +205,9 @@ const App = {
 
     buyProduct: async function(transaction){
         try{
-
-            return true;
+            var instance = await this.storeManager.deployed();
+            var response = await instance.BuyProduct(transaction.id, transaction.storeId, transaction.quantity, transaction.totalPrice, transaction.newQuantity, {from: this.account, value: transaction.totalPrice});
+            return response;
         }
         catch(error){
             console.error(error);

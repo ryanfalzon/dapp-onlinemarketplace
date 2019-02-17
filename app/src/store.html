@@ -16,9 +16,9 @@
                 <p>Ξ{{product.pricePerUnit}}</p>
                 <div class="form-group row">
                     <div class="col-xs-4">
-                        <input type="number" ng-maxlength="{{product.availableUnits.words[0]}}" class="form-control" id="quantity" ng-model="quantity" placeholder="Enter Quantity">
+                        <input type="number" ng-maxlength="{{product.availableUnits.words[0]}}" class="form-control" id="{{'quantity' + $index}}" placeholder="Enter Quantity">
                     </div>
-                    <button type="button" class="btn btn-success">Buy <span class="glyphicon glyphicon-shopping-cart"></span></button>
+                    <button type="button" class="btn btn-success" ng-click="BuyProduct(product, $index)">Buy <span class="glyphicon glyphicon-shopping-cart"></span></button>
                 </div>
             </div>
         </li>
