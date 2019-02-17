@@ -30,7 +30,7 @@ contract Marketplace{
 
     // Function to remove a manager
     function RemoveManager(address manager) AuthenticateMessageSender public {
-        require(managers[manager] == true);
+        require(managers[manager] == true, "Address Is Not A Manager");
         managers[manager] = false;
 
         // Delete managers from array of all managers
@@ -57,7 +57,7 @@ contract Marketplace{
 
     // Function to check of message sender is a manager
     modifier AuthenticateMessageSender(){
-        require((administrator == msg.sender), "Invalid Message Sender");
+        require((administrator == msg.sender), "Only Administrators Are Able To Run This Function");
         _;
     }
 }
