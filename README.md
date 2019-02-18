@@ -12,12 +12,17 @@ Install [C++ Build Tools](https://www.microsoft.com/en-us/download/details.aspx?
 
 Install [Metamask](https://metamask.io/)
 
-In a comman line opened as an Administrator, run the following commands one after the other:
+In a command line opened as an Administrator, run the following commands one after the other:
 
 ```bash
 npm install -g ganache-cli
 npm install -g truffle
 npm install -g production windows-build tools
+```
+
+In a command line, opened as an Administrator, in the src directory of the solution, run the following commands:
+
+```bash
 npm install web3
 npm install solc
 ```
