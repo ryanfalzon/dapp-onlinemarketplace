@@ -13,10 +13,65 @@
 
     <!-- Stylesheets File
     ===================== -->
-    <link href="css/theme.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap-theme.css.map" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <style>
+        body {
+            padding-top: 70px;
+            padding-bottom: 30px;
+            }
+
+            .theme-dropdown .dropdown-menu {
+            position: static;
+            display: block;
+            margin-bottom: 20px;
+            }
+
+            .theme-showcase > p > .btn {
+            margin: 5px 0;
+            }
+
+            .theme-showcase .navbar .container {
+            width: auto;
+            }
+
+            .col-lg-4 {
+                margin-bottom: 20px;
+                text-align: center;
+            }
+
+            .col-lg-4 p {
+                margin-right: 10px;
+                margin-left: 10px;
+            }
+
+            .navbar{
+            font-family: 'Ubuntu Condensed', sans-serif;
+            }
+
+            #homeHeading{
+            background-image: url("http://scet.berkeley.edu/wp-content/uploads/BCgraphicelement-3.png");
+            background-size: 100%;
+            box-shadow: 0 0 20px 20px white inset;
+            }
+
+            #homeHeading h1{
+            letter-spacing: 5px;
+            line-height: 100px !important;
+            border-left: 5px solid black;
+            border-bottom: 5px solid black;
+            padding-left: 20px;
+            width: max-content;
+            background: linear-gradient(to right, white, transparent);
+            }
+
+            #homeHeading button{
+            width: 160px;
+            height: 50px;
+            font-size: 20px;
+            }
+    </style>
 </head>
 <body>
 
@@ -30,19 +85,19 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a onclick="App.changeView('home')" class="navbar-brand">Online Marketplace</a>
+                <a href="#home" class="navbar-brand">Online Marketplace</a>
             </div>
             <div id="navbar" class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    <li id="adminViewButton" onclick="App.changeView('administrator')"><a>Administrator</a></li>
+                    <li id="adminViewButton"><a href="#administrator">Administrator</a></li>
                     <li id="managerViewButton" class="dropdown">
                         <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Store Manager<span class="caret"></span></a>
                         <ul class="dropdown-menu">
-                            <li id="manageStoresButton" onclick="App.changeView('manageStores')"><a>Manage Stores</a></li>
-                            <li id="manageProductsButton" onclick="App.changeView('manageProducts')"><a>Manage Products</a></li>
+                            <li id="manageStoresButton"><a href="#manageStores">Manage Stores</a></li>
+                            <li id="manageProductsButton"><a href="#manageProducts">Manage Products</a></li>
                         </ul>
                     </li>
-                    <li id="marketplaceButton" onclick="App.changeView('marketplace')"><a>Marketplace</a></li>
+                    <li id="marketplaceButton"><a href="#marketplace">Marketplace</a></li>
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
                     <li style="float: right"><a href="#">Cart <span class="badge">42</span></a></li>
@@ -59,8 +114,6 @@
     ==================== -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular-route.js"></script>
-    <script src="../bundle.js"></script>
+    <script src="../index.js"></script>
 </body>
 </html>
