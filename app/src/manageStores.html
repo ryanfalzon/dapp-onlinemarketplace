@@ -2,33 +2,25 @@
     <h1>Store Manager Panel</h1>
 </header>
 
-<form class="jumbotron">
+<form id="addStoreForm" class="jumbotron">
     <div class="form-group">
-        <label for="name">Store Name:</label>
-        <input type="text" class="form-control" id="name" ng-model="name" placeholder="Enter Name">
+        <label for="nameField">Store Name:</label>
+        <input type="text" class="form-control" id="nameField" placeholder="Enter Name">
     </div>
     <div class="form-group">
-        <label for="description">Description:</label>
-        <textarea class="form-control" rows="5" id="description" style="resize: none" ng-model="description" placeholder="Description of Store"></textarea>
+        <label for="descriptionField">Description:</label>
+        <textarea class="form-control" rows="5" id="descriptionField" style="resize: none" placeholder="Description of Store"></textarea>
     </div>
     <div class="form-group">
-        <label for="image">Image URL:</label>
-        <input type="url" class="form-control" id="image" ng-model="imageUrl" placeholder="Enter Image URL">
+        <label for="imageUrlField">Image URL:</label>
+        <input type="url" class="form-control" id="imageUrlField" placeholder="Enter Image URL">
     </div>
-    <button type="submit" class="btn btn-primary" ng-click="AddStore()">Submit <span class="glyphicon glyphicon-ok"></span></button>
-    <button type="submit" class="btn btn-primary" ng-click="RefreshStoreList()">List</button>
+    <button type="submit" class="btn btn-success" onclick="App.addStore()">Submit <span class="glyphicon glyphicon-ok"></span></button>
+    <button type="reset" class="btn btn-primary">Reset <span class="glyphicon glyphicon-retweet"></span></button>
 </form>
 
 <div class="jumbotron">
     <h3>Store List</h3>
 
-    <ul class="list-group">
-        <li class="list-group-item" ng-repeat="store in stores">
-            {{store.name}} (Ξ{{store.balance.words[0]}})
-            <span class="pull-right">
-                <button class="btn btn-xs btn-info" ng-click="RemoveStore(store)" ng-disabled="store.balance.words[0] == 0">Withdraw <span class="glyphicon glyphicon-download-alt"></span></button>
-                <button class="btn btn-xs btn-danger" ng-click="RemoveStore(store)">Remove <span class="glyphicon glyphicon-trash"></span></button>
-            </span>
-        </li>
-    </ul>
+    <ul id="storeList" class="list-group"></ul>
 </div>

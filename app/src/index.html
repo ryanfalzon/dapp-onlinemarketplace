@@ -18,7 +18,7 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap-theme.css.map" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
 </head>
-<body ng-app="onlineMarket">
+<body>
 
     <!--Navigation Bar-->
     <nav class="navbar navbar-inverse navbar-fixed-top">
@@ -30,19 +30,19 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="#">Online Marketplace</a>
+                <a onclick="App.changeView('home')" class="navbar-brand">Online Marketplace</a>
             </div>
             <div id="navbar" class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    <li id="adminViewButton"><a href="#!admin">Administrator</a></li>
+                    <li id="adminViewButton" onclick="App.changeView('administrator')"><a>Administrator</a></li>
                     <li id="managerViewButton" class="dropdown">
                         <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Store Manager<span class="caret"></span></a>
                         <ul class="dropdown-menu">
-                            <li><a href="#!manageStores">Manage Stores</a></li>
-                            <li><a href="#!manageProducts">Manage Products</a></li>
+                            <li id="manageStoresButton" onclick="App.changeView('manageStores')"><a>Manage Stores</a></li>
+                            <li id="manageProductsButton" onclick="App.changeView('manageProducts')"><a>Manage Products</a></li>
                         </ul>
                     </li>
-                    <li><a href="#!marketplace">Marketplace</a></li>
+                    <li id="marketplaceButton" onclick="App.changeView('marketplace')"><a>Marketplace</a></li>
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
                     <li style="float: right"><a href="#">Cart <span class="badge">42</span></a></li>
@@ -52,7 +52,7 @@
     </nav>
 
     <!--View Render-->
-    <div class="container theme-showcase" ng-view></div>
+    <div id="content" class="container theme-showcase"></div>
 
 
     <!-- Javascript File

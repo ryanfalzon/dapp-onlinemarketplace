@@ -20,6 +20,7 @@
   },
   "dependencies": {
     "babel-loader": "^8.0.5",
+    "solc": "^0.5.4",
     "truffle-contract": "^4.0.4",
     "web3": "^1.0.0-beta.46"
   }

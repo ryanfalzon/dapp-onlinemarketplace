@@ -2,24 +2,17 @@
     <h1>Administrator Panel</h1>
 </header>
 
-<form class="jumbotron">
+<form id="addStoreManagerForm" class="jumbotron">
     <div class="form-group">
-        <label for="address">Store Manager Address:</label>
-        <input type="text" class="form-control" id="address" ng-model="address" placeholder="Enter Address">
+        <label for="addressField">Store Manager Address:</label>
+        <input type="text" class="form-control" id="addressField" placeholder="Enter Address">
     </div>
-    <button type="submit" class="btn btn-primary" ng-click="AddStoreManager()">Add <span class="glyphicon glyphicon-ok"></span></button>
-    <button type="submit" class="btn btn-primary" ng-click="RefreshManagerList()">List</button>
+    <button type="submit" class="btn btn-success" onclick="App.addStoreManager()">Add <span class="glyphicon glyphicon-ok"></span></button>
+    <button type="reset" class="btn btn-primary">Reset <span class="glyphicon glyphicon-retweet"></span></button>
 </form>
 
 <div class="jumbotron">
     <h3>Store Manager List</h3>
 
-    <ul class="list-group">
-        <li class="list-group-item" ng-repeat="manager in managers.content">
-            {{manager}}
-            <span class="pull-right">
-                <button class="btn btn-xs btn-danger" ng-click="RemoveStoreManager(manager)">Remove <span class="glyphicon glyphicon-trash"></span></button>
-            </span>
-        </li>
-    </ul>
+    <ul id="storeManagerList" class="list-group"></ul>
 </div>
