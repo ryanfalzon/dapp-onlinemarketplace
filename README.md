@@ -48,6 +48,6 @@ Open another command line, navigate to the app/src folder in the repository and 
 npm run dev
 ```
 
-Open metamask chrome extension, click on import account, past the private key of the first account that was displayed when executing testrpc and click import. This will connect metamask to the first address.
+Open metamask chrome extension, click on import account, paste the private key of the first account that was displayed when executing testrpc and click import. This will connect metamask to the first address.
 
 To view the website, naviagte to localhost:8080
