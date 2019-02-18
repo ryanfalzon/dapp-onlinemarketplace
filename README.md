@@ -15,7 +15,7 @@ Install [Metamask](https://metamask.io/)
 In a comman line opened as an Administrator, run the following commands one after the other:
 
 ```bash
-npm install ethereumjs-testrpc web3@0.20.1
+npm install -g ganache-cli
 npm install -g truffle
 npm install -g production windows-build tools
 npm install web3
@@ -27,7 +27,7 @@ npm install solc
 Clone the repository on your machine. Open a command line and type the following command:
 
 ```bash
-testrpc
+ganache-cli <options>
 ```
 
 It is important to take note of the list of public addresses and their respective private keys that are displayed in the terminal at the start of execution.
