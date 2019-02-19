@@ -64,7 +64,7 @@ contract StoreManager{
     }
 
     // Function to delete a store
-    function DeleteStore(bytes32 id) RequireStoreOwnerStatus(id) public{
+    function DeleteStore(bytes32 id) RequireManagerStatus RequireStoreOwnerStatus(id) public{
 
         // Withdraw balance of store
         uint storeBalance = storesMappedToId[id].balance;
@@ -108,7 +108,7 @@ contract StoreManager{
     }
 
     // Function to return all stores who are assigned to an owner
-    function GetAllStoresByOwner(address storeOwner) view public returns(bytes32[] memory){
+    function GetAllStoresByOwner(address storeOwner) RequireManagerStatus view public returns(bytes32[] memory){
         return storesMappedToOwner[storeOwner];
     }
 

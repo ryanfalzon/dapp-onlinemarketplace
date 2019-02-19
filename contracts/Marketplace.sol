@@ -23,6 +23,9 @@ contract Marketplace{
 
     // Function to add a new manager
     function AddManager(address manager) public AuthenticateMessageSender {
+        // Make sure address passed is not already a manager
+        require(managers[manager] == false, "Address is already a manager");
+
         managers[manager] = true;
         allManagers.push(manager);
         emit ManagerAdded(manager);
@@ -30,7 +33,9 @@ contract Marketplace{
 
     // Function to remove a manager
     function RemoveManager(address manager) public AuthenticateMessageSender {
-        require(managers[manager] == true, "Address Is Not A Manager");
+        // Make sure address passed is actually a manager
+        require(managers[manager] == true, "Address is not a manager");
+
         managers[manager] = false;
 
         // Delete managers from array of all managers
