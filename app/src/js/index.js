@@ -42,6 +42,7 @@ const App = {
       // Get accounts
       const accounts = await web3.eth.getAccounts();
       this.account = accounts[0];
+      console.log(this.account);
 
       // Set the view
       await this.initView();
@@ -72,6 +73,7 @@ const App = {
     // Call the smart contract function
     const { CheckAdministrator } = this.marketplace.methods;
     const response = await CheckAdministrator(this.account).call({ from: this.account });
+    console.log(response);
     return response;
   },
 
@@ -365,6 +367,8 @@ const App = {
         }
       }
 
+      console.log(storeList);
+
       // Print store list in the DOM
       document.getElementById('storeList').innerHTML = '';
       storeList.forEach(function (store) {
@@ -399,9 +403,6 @@ const App = {
       const { BuyProduct } = this.storeManager.methods;
       const response = await BuyProduct(productId, storeId, quantity, totalPrice, newQuantity).send({ from: this.account, value: totalPrice });
       console.log(response);
-
-      // Refresh manager list
-      document.getElementById('addStoreManagerForm').reset();
     }
     catch (error) {
       console.error(error);

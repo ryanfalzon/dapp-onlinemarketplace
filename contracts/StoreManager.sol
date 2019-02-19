@@ -34,7 +34,7 @@ contract StoreManager{
     mapping(bytes32 => Product) public productsMappedToId;
 
     // Contract events
-    event StoreCreated(bytes32 id, address owner, string name, string description, string imageUrl);
+    event StoreCreated(bytes32 id, address owner, string name, string description, string imageUrl, uint balance);
     event StoreDeleted(bytes32 id);
     event ProductCreated(bytes32 id, bytes32 storeId, string name, string description, string imageUrl, uint pricePerUnit, uint availableUnits);
     event ProductDeleted(bytes32 id, bytes32 storeId);
@@ -59,7 +59,7 @@ contract StoreManager{
         allStores.push(store.id);
 
         // Emit event that the contract has successfully created the store
-        emit StoreCreated(id, msg.sender, name, description, imageUrl);
+        emit StoreCreated(id, msg.sender, name, description, imageUrl, 0);
         return store.id;
     }
 
@@ -159,7 +159,7 @@ contract StoreManager{
     }
 
     // Function to transfer ether from buyer to store owner
-    function BuyProduct(bytes32 id, bytes32 storeId, uint quantity, uint totalPrice, uint newQuantity) payable public{
+    function BuyProduct(bytes32 id, bytes32 storeId, uint quantity, uint totalPrice, uint newQuantity) payable public {
         // Checks need to process function
         Product memory product = productsMappedToId[id];
         require(msg.value >= totalPrice, "Insufficient Funds Sent");
@@ -174,7 +174,7 @@ contract StoreManager{
 
         // Process transactions
         productsMappedToId[id].availableUnits = newQuantity;
-        storesMappedToId[id].balance += totalPrice;
+        storesMappedToId[storeId].balance += totalPrice;
         emit ProductSold(id, storeId, quantity, totalPrice, newQuantity);
     }
 

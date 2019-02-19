@@ -17,19 +17,19 @@ contract Marketplace{
     }
 
     // Function to check if the address passed is an administrator
-    function CheckAdministrator(address addressToCheck) view public returns(bool){
+    function CheckAdministrator(address addressToCheck) public view returns(bool){
         return (administrator == addressToCheck);
     }
 
     // Function to add a new manager
-    function AddManager(address manager) AuthenticateMessageSender public {
+    function AddManager(address manager) public AuthenticateMessageSender {
         managers[manager] = true;
         allManagers.push(manager);
         emit ManagerAdded(manager);
     }
 
     // Function to remove a manager
-    function RemoveManager(address manager) AuthenticateMessageSender public {
+    function RemoveManager(address manager) public AuthenticateMessageSender {
         require(managers[manager] == true, "Address Is Not A Manager");
         managers[manager] = false;
 
@@ -46,12 +46,12 @@ contract Marketplace{
     }
 
     // Function to get all store managers
-    function GetAllManagers() view public returns(address[] memory){
+    function GetAllManagers() public view returns(address[] memory){
         return allManagers;
     }
 
     // Function to check if the address passed is a manager
-    function CheckManager(address manager) view public returns(bool){
+    function CheckManager(address manager) public view returns(bool){
         return managers[manager];
     }
 
