@@ -26,12 +26,41 @@ contract StoreManager{
     }
 
     // Properties
+    address payable private administrator;
     Marketplace private marketplace;
     bytes32[] private allStores;
     mapping(address => bytes32[]) public storesMappedToOwner;
     mapping(bytes32 => Store) public storesMappedToId;
     mapping(bytes32 => bytes32[]) public productsMappedToStore;
     mapping(bytes32 => Product) public productsMappedToId;
+
+    // Mapping iterator for stores
+    function GetStoreCount(address manager) view public returns (uint){
+        return storesMappedToOwner[manager].length;
+    }
+    function GetStoreElementAtIndex(address manager, uint index) view public returns (bytes32, address, string memory, string memory, string memory, uint){
+        bytes32[] memory stores = storesMappedToOwner[manager];
+        Store memory store = storesMappedToId[stores[index]];
+        return (store.id, store.owner, store.name, store.description, store.imageUrl, store.balance);
+    }
+    function GetStoreElement(bytes32 id) view public returns (bytes32, address, string memory, string memory, string memory, uint){
+        Store memory store = storesMappedToId[id];
+        return (store.id, store.owner, store.name, store.description, store.imageUrl, store.balance);
+    }
+
+    // Mapping iterator for products
+    function GetProductsCount(bytes32 store) view public returns (uint){
+        return productsMappedToStore[store].length;
+    }
+    function GetProductElementAtIndex(bytes32 store, uint index) view public returns (bytes32, bytes32, string memory, string memory, string memory, uint, uint){
+        bytes32[] memory products = productsMappedToStore[store];
+        Product memory product = productsMappedToId[products[index]];
+        return (product.id, product.storeId, product.name, product.description, product.imageUrl, product.pricePerUnit, product.availableUnits);
+    }
+    function GetProductElement(bytes32 id) view public returns (bytes32, bytes32, string memory, string memory, string memory, uint, uint){
+        Product memory product = productsMappedToId[id];
+        return (product.id, product.storeId, product.name, product.description, product.imageUrl, product.pricePerUnit, product.availableUnits);
+    }
 
     // Contract events
     event StoreCreated(bytes32 id, address owner, string name, string description, string imageUrl, uint balance);
@@ -43,7 +72,13 @@ contract StoreManager{
 
     // Constructor
     constructor(address marketplaceAddress) public{
+        administrator = msg.sender;
         marketplace = Marketplace(marketplaceAddress);
+    }
+
+    // Self destruction
+    function DestroyContract() RequireContractOwnerStatus public{
+        selfdestruct(administrator);
     }
 
     // Function to create a new store
@@ -204,6 +239,11 @@ contract StoreManager{
     // Function to check if message sender is the store owner
     modifier RequireStoreOwnerStatus(bytes32 storeId){
         require(storesMappedToId[storeId].owner == msg.sender);
+        _;
+    }
+
+    modifier RequireContractOwnerStatus(){
+        require(msg.sender == administrator);
         _;
     }
 }

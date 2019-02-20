@@ -3,17 +3,33 @@ pragma solidity ^0.5.0;
 contract Marketplace{
 
     // Properties
+    address payable private administrator;
     address[] private allManagers;
     mapping(address => bool) public managers;
 
+    // Mapping iterator for managers
+    function GetManagerCount() view public returns (uint){
+        return allManagers.length;
+    }
+    function GetElementAtIndex(uint index) view public returns (bool){
+        return managers[allManagers[index]];
+    }
+    function GetElement(address manager) view public returns (bool){
+        return managers[manager];
+    }
+
     // Contract events
-    address private administrator;
     event ManagerAdded(address addedAddress);
     event ManagerRemoved(address removedAddress);
 
     // Constructor - Sets the person who initiates the Marketplace contract as an administrator
     constructor() public {
         administrator = msg.sender;
+    }
+
+    // Self destruction
+    function DestroyContract() AuthenticateMessageSender public{
+        selfdestruct(administrator);
     }
 
     // Function to check if the address passed is an administrator
