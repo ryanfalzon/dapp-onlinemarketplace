@@ -67,7 +67,7 @@ contract StoreManager{
     function DeleteStore(bytes32 id) RequireManagerStatus RequireStoreOwnerStatus(id) public{
 
 		// Perform checks
-		require(keccak256(storesMappedToId[id]) != keccak256(""), "Store does not exist");
+		require(keccak256(abi.encodePacked(storesMappedToId[id].name)) != keccak256(abi.encodePacked("")), "Store does not exist");
 		
         // Withdraw balance of store
         uint storeBalance = storesMappedToId[id].balance;
@@ -122,10 +122,6 @@ contract StoreManager{
 
     // Function to create a new product
     function CreateProduct(bytes32 storeId, string memory name, string memory description, string memory imageUrl, uint pricePerUnit, uint availableUnits) RequireManagerStatus RequireStoreOwnerStatus(storeId) public returns (bytes32){
-	
-		// Perform checks
-		require((pricePerUnit > 0) && (pricePerUnit <= (2**256-1)), "Invalid price per unit entered");
-		require(availableUnits > 0, "Invalid number of available units entered");
 		
 		// Create the product
         bytes32 id = keccak256(abi.encodePacked(msg.sender, storeId, name, description, imageUrl, pricePerUnit, availableUnits, now));
@@ -143,7 +139,7 @@ contract StoreManager{
     function DeleteProduct(bytes32 id, bytes32 storeId) RequireManagerStatus RequireStoreOwnerStatus(storeId) public{
 	
 		// Perform checks
-		require(keccak256(productsMappedToId[id]) != keccak256(""), "Product does not exist");
+        require(keccak256(abi.encodePacked(productsMappedToId[id].name)) != keccak256(abi.encodePacked("")), "Product does not exist");
 		
         // Find all products of the store
         bytes32[] storage storeProducts = productsMappedToStore[storeId];
@@ -170,7 +166,7 @@ contract StoreManager{
 	
         // Perform checks
         Product memory product = productsMappedToId[id];
-        require(msg.value >= totalPrice, "Insufficient Funds Sent");
+        require(totalPrice == (quantity * productsMappedToId[id].pricePerUnit), "Insufficient Funds Sent");
         require(msg.sender.balance >= msg.value, "Insufficient Funds In Account");
         require(product.availableUnits >= quantity, "Quantity Needed Is Larger Than Available");
 
