@@ -48,7 +48,7 @@ contract StoreManager{
 
     // Function to create a new store
     function CreateStore(string memory name, string memory description, string memory imageUrl) RequireManagerStatus public returns (bytes32){
-
+	
         // Create the store
         bytes32 id = keccak256(abi.encodePacked(msg.sender, name, description, imageUrl, now));
         Store memory store = Store(id, msg.sender, name, description, imageUrl, 0);
@@ -66,6 +66,9 @@ contract StoreManager{
     // Function to delete a store
     function DeleteStore(bytes32 id) RequireManagerStatus RequireStoreOwnerStatus(id) public{
 
+		// Perform checks
+		require(keccak256(storesMappedToId[id]) != keccak256(""), "Store does not exist");
+		
         // Withdraw balance of store
         uint storeBalance = storesMappedToId[id].balance;
         if(storeBalance > 0){
@@ -117,13 +120,14 @@ contract StoreManager{
         return allStores;
     }
 
-    // Function to return the amount of stores that are available
-    function GetStoreAmount() view public returns(uint){
-        return allStores.length;
-    }
-
     // Function to create a new product
     function CreateProduct(bytes32 storeId, string memory name, string memory description, string memory imageUrl, uint pricePerUnit, uint availableUnits) RequireManagerStatus RequireStoreOwnerStatus(storeId) public returns (bytes32){
+	
+		// Perform checks
+		require((pricePerUnit > 0) && (pricePerUnit <= (2**256-1)), "Invalid price per unit entered");
+		require(availableUnits > 0, "Invalid number of available units entered");
+		
+		// Create the product
         bytes32 id = keccak256(abi.encodePacked(msg.sender, storeId, name, description, imageUrl, pricePerUnit, availableUnits, now));
         Product memory product = Product(id, storeId, name, description, imageUrl, pricePerUnit, availableUnits);
 
@@ -137,7 +141,10 @@ contract StoreManager{
 
     // Function to delete a product
     function DeleteProduct(bytes32 id, bytes32 storeId) RequireManagerStatus RequireStoreOwnerStatus(storeId) public{
-
+	
+		// Perform checks
+		require(keccak256(productsMappedToId[id]) != keccak256(""), "Product does not exist");
+		
         // Find all products of the store
         bytes32[] storage storeProducts = productsMappedToStore[storeId];
 
@@ -160,7 +167,8 @@ contract StoreManager{
 
     // Function to transfer ether from buyer to store owner
     function BuyProduct(bytes32 id, bytes32 storeId, uint quantity, uint totalPrice, uint newQuantity) payable public {
-        // Checks need to process function
+	
+        // Perform checks
         Product memory product = productsMappedToId[id];
         require(msg.value >= totalPrice, "Insufficient Funds Sent");
         require(msg.sender.balance >= msg.value, "Insufficient Funds In Account");
@@ -179,7 +187,7 @@ contract StoreManager{
     }
 
     // Function to withdraw store balance and send to owner
-    function WithdrawStoreBalance(bytes32 id) public{        
+    function WithdrawStoreBalance(bytes32 id) RequireManagerStatus RequireStoreOwnerStatus(id)  public{        
 
         // Check if store balance is greater than 0
         require(storesMappedToId[id].balance > 0, "Store Balance Is 0");

@@ -423,7 +423,7 @@ window.addEventListener("load", function () {
       "No web3 detected. Falling back to http://127.0.0.1:8545.",
     );
     App.web3 = new Web3(
-      new Web3.providers.HttpProvider("http://127.0.0.1:9545"),
+      new Web3.providers.HttpProvider("http://127.0.0.1:8545"),
     );
   }
 
