@@ -2,11 +2,32 @@
 
 ## Contract Self Destruction
 
+### Definition
+
+Selftdestructs in Ethereum are an oepration at the EVM level, which are independent of what language or client is used. For instance, calling `selfdestruct(address)` sends all of the contract's current balance to address, and destorys the bytecode that points to that address, making the smart contract absolete. This is useful when you are finished with a contract, because it costs far less gas then just sending the baalance via a class such as `address.send(this.balance)`. It is important to note that if an interaction occurs with a contruct that has selfdestructed, **all funds are lost**.
+
+### Use
+
+In this assignment, a self desturuction function was inserted in both contracts, with an access modifier that allows only the administrator to call it. The code snippet below illustrates this:
+
+```bash
+// Self destruction
+function DestroyContract() AuthenticateMessageSender public{
+    selfdestruct(administrator);
+}
+
+// Function to check of message sender is a manager
+modifier AuthenticateMessageSender(){
+    require((administrator == msg.sender), "Only Administrators Are Able To Run This Function");
+    _;
+}
+```
+
 ## Factory Contract
 
 ### Definition
 
-A factory contract is essentially a child contract which can also be referred to as assets. The factory part is used to store the address of the child contract so they can be made available at any time. A common use case for this design patter would be to track sold assets such as houses and have data about that asset, such as the current owner, available at all times.
+A factory contract is essentially enables the deployment of child contracts also known as assets. The factory part is used to store the address of the child contract so they can be made available at any time. A common use case for this design patter would be to track sold assets such as houses and have data about that asset, such as the current owner, available at all times.
 
 In this project, the factory contract was note utilized mainly because the data of the assets, such as the store owner, was not going to be changed. Hence a mapping design was adopted were for instance stores were defined as follows:
 
@@ -22,7 +43,12 @@ Where the array of `bytes32` contains a list of all store Ids, the mapping `stor
 
 ### Definition
 
+A named registry is beneficial when your smart contract relys on a number of other smart contracts. Having a lot of dependencies can be difficult to maintain and this is were the name registry comes in. Instead of having the addresses of a lot of contracts, we would have the address to one contract that manages all other dependencies.
+This works by having a mapping between the contract address and a given name for the contract as follows `contract_name => contract_address`. The benefit of this would be, that if new versions of contracts come out, we would only need to update the address of the mapping and nothing else.
+
 ### Use
+
+This design pattern was not used since from the two smart contracts written, only one of them has one dependency to another contract.
 
 ## Mapping Iterator
 
