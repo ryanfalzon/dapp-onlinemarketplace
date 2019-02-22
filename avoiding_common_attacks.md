@@ -3,7 +3,7 @@
 ## Overflows & Underflows
 
 ### Definition
-The Ethereum Virtual Machine uses fixed-size integer data types. For instance, `uint8` can store values from 0 to 255. The value 255 is derived from the following calcuation@ `2<sup>256</sup> - 1`. If a value greater than 255 is stored in a `uint8`, then the value that is actually found in that variable is that of 0. Similarly, if a value less than 0 is transfered to a `uint8`, then the value in the variable is that off 255. This can be very dangerous in the case that an address tries to spend more ethers than he has in his balance.
+The Ethereum Virtual Machine uses fixed-size integer data types. For instance, `uint8` can store values from 0 to 255. The value 255 is derived from the following calcuation: `(2^8) - 1`. If a value greater than 255 is stored in a `uint8`, then the value that is actually found in that variable is that of 0. Similarly, if a value less than 0 is transfered to a `uint8`, then the value in the variable is that off 255. This can be very dangerous in the case that an address tries to spend more ethers than he has in his balance.
 
 ### Prevention
 
@@ -11,28 +11,29 @@ To prevent against overflows and underflows, a number of checks are being perfor
 1. Check if the balance the address has, is greater than or equal to the total price;
 2. Check if the number of available units is greater than or equal to the total quantity needed;
 
-    // Function to transfer ether from buyer to store owner
-    function BuyProduct(bytes32 id, bytes32 storeId, uint quantity) payable public {
+```bash
+// Function to transfer ether from buyer to store owner
+function BuyProduct(bytes32 id, bytes32 storeId, uint quantity) payable public {
 
-        // Perform checks
-        Product memory product = productsMappedToId[id];
-        uint totalAmount = product.pricePerUnit * quantity;
-        require(msg.value >= totalAmount, "Insufficient Funds Sent");
-        require(msg.sender.balance >= msg.value, "Insufficient Funds In Account");
-        require(product.availableUnits >= quantity, "Quantity Needed Is Larger Than Available");
-        
-        // Give change to message sender
-        if(msg.value > totalAmount){
-            uint change = msg.value - totalAmount;
-            require(msg.sender.send(change));
-        }
+    // Perform checks
+    Product memory product = productsMappedToId[id];
+    uint totalAmount = product.pricePerUnit * quantity;
+    require(msg.value >= totalAmount, "Insufficient Funds Sent");
+    require(msg.sender.balance >= msg.value, "Insufficient Funds In Account");
+    require(product.availableUnits >= quantity, "Quantity Needed Is Larger Than Available");
 
-        // Process transactions
-        productsMappedToId[id].availableUnits = product.availableUnits - quantity;
-        storesMappedToId[storeId].balance += totalAmount;
-        emit ProductSold(id, storeId, quantity, totalAmount);
+    // Give change to message sender
+    if(msg.value > totalAmount){
+        uint change = msg.value - totalAmount;
+        require(msg.sender.send(change));
     }
 
+    // Process transactions
+    productsMappedToId[id].availableUnits = product.availableUnits - quantity;
+    storesMappedToId[storeId].balance += totalAmount;
+    emit ProductSold(id, storeId, quantity, totalAmount);
+}
+```
 
 ## Delegatecall
 
