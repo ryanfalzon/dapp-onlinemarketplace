@@ -8,7 +8,7 @@ The Ethereum Virtual Machine uses fixed-size integer data types. For instance, `
 ### Prevention
 
 To prevent against overflows and underflows, a number of checks are being performed. Consider the code snippet below of the function to buy a product. In this instance, I am making the following checks relating to the prevention of overflows and underflows:
-1. Check if the balance the address has, is greater than or equal to the total price;
+1. Check if the address's balance is greater than or equal to the total price;
 2. Check if the number of available units is greater than or equal to the total quantity needed;
 
 ```bash
