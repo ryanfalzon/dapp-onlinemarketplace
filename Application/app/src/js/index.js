@@ -46,6 +46,7 @@ const App = {
 
       // Set the view
       await this.initView();
+      await this.refreshBalance()
     }
     catch (error) {
       console.error("Could not connect to contract or chain.");
@@ -210,9 +211,9 @@ const App = {
         storesList.forEach(function (store) {
             document.getElementById('storeList').innerHTML += `
                 <li class="list-group-item">
-                  ${store.name} (Ξ${store.balance})
+                  ${store.name} (Ξ${web3.fromWei(store.balance)})
                   <span class="pull-right">
-                    <button class="btn btn-xs btn-info" onclick="App.removeStore('${store.id}')" ng-disabled="store.balance.words[0] == 0">Withdraw <span class="glyphicon glyphicon-download-alt"></span></button>
+                    <button class="btn btn-xs btn-info" onclick="App.withdraw('${store.id}')" ng-disabled="store.balance.words[0] == 0">Withdraw <span class="glyphicon glyphicon-download-alt"></span></button>
                     <button class="btn btn-xs btn-danger" onclick="App.removeStore('${store.id}')">Remove <span class="glyphicon glyphicon-trash"></span></button>
                   </span>
                 </li>
@@ -237,6 +238,18 @@ const App = {
     }
   },
 
+  withdraw: async function (storeId) {
+    try{
+      // Call the smart contract function
+      const { WithdrawStoreBalance } = this.storeManager.methods;
+      const response = await WithdrawStoreBalance(storeId).send({ from: this.account });
+      console.log(response);
+    }
+    catch(error){
+      console.error(error);
+    }
+  },
+
   addProduct: async function () {
     try {
       // Get the address from the text field
@@ -249,7 +262,7 @@ const App = {
 
       // Call the smart contract function
       const { CreateProduct } = this.storeManager.methods;
-      const response = await CreateProduct(store, name, description, imageUrl, price, quantity).send({ from: this.account });
+      const response = await CreateProduct(store, name, description, imageUrl, web3.toWei(price), quantity).send({ from: this.account });
       console.log(response);
 
       // Refresh manager list
@@ -333,12 +346,12 @@ const App = {
               <div style="width: 69%; display: inline-block; padding-left: 20px">
                 <h3>${productsList[i].name}</h3>
                 <p>${productsList[i].description}</p>
-                <p>Ξ${productsList[i].pricePerUnit}</p>
+                <p>Ξ${web3.fromWei(productsList[i].pricePerUnit)}</p>
                 <div class="form-group row">
                   <div class="col-xs-4">
                     <input type="number" class="form-control" id="quantity${i}" placeholder="Enter Quantity" min="1" max="${productsList[i].availableUnits}">
                   </div>
-                  <button type="button" class="btn btn-success" onclick="App.buyProduct('${productsList[i].id}', '${productsList[i].storeId}', ${i}, ${productsList[i].pricePerUnit}, ${productsList[i].availableUnits})">Buy <span class="glyphicon glyphicon-shopping-cart"></span></button>
+                  <button type="button" class="btn btn-success" onclick="App.buyProduct('${productsList[i].id}', '${productsList[i].storeId}', ${i}, ${web3.fromWei(productsList[i].pricePerUnit)}, ${productsList[i].availableUnits})">Buy <span class="glyphicon glyphicon-shopping-cart"></span></button>
                 </div>
               </div>
             </li>
@@ -397,16 +410,21 @@ const App = {
       // Get the address from the text field
       const quantity = document.getElementById('quantity' + quantityFieldId).value;
       const totalPrice = pricePerUnit * quantity;
-      const newQuantity = availableUnits - quantity;
 
       // Call the smart contract function
       const { BuyProduct } = this.storeManager.methods;
-      const response = await BuyProduct(productId, storeId, quantity, totalPrice, newQuantity).send({ from: this.account, value: totalPrice });
+      const response = await BuyProduct(productId, storeId, quantity).send({ from: this.account, value: web3.toWei(totalPrice) });
       console.log(response);
     }
     catch (error) {
       console.error(error);
     }
+  },
+
+  refreshBalance: async function(){
+    let balanceWei = await App.web3.eth.getBalance(App.account);
+    let balanceEther = web3.fromWei(balanceWei);
+    document.getElementById('balance').innerHTML = 'Ξ' + balanceEther;
   }
 };
 
@@ -432,6 +450,8 @@ window.addEventListener("load", function () {
 });
 
 window.addEventListener("hashchange", async function(){
+  await App.refreshBalance();
+
   if (location.hash === '#administrator') {
     var response = await App.checkAdminStatus();
     if(response === true){

@@ -25,14 +25,26 @@ contract StoreManager{
         uint availableUnits;
     }
 
+    // Holds a receipt data
+    struct Receipt{
+        bytes32 id;
+        bytes32 productId;
+        uint quantity;
+        uint totalPrice;
+        address buyer;
+    }
+
     // Properties
     address payable private administrator;
     Marketplace private marketplace;
     bytes32[] private allStores;
+    bytes32[] private receipts;
     mapping(address => bytes32[]) public storesMappedToOwner;
     mapping(bytes32 => Store) public storesMappedToId;
     mapping(bytes32 => bytes32[]) public productsMappedToStore;
     mapping(bytes32 => Product) public productsMappedToId;
+    mapping(bytes32 => Receipt) public receiptsMappedToId;
+    mapping(bytes32 => bytes32[]) public receiptsMappedToStore;
 
     // Mapping iterator for stores
     function GetStoreCount(address manager) view public returns (uint){
@@ -67,7 +79,7 @@ contract StoreManager{
     event StoreDeleted(bytes32 id);
     event ProductCreated(bytes32 id, bytes32 storeId, string name, string description, string imageUrl, uint pricePerUnit, uint availableUnits);
     event ProductDeleted(bytes32 id, bytes32 storeId);
-    event ProductSold(bytes32 id, bytes32 storeId, uint quantity, uint totalPrice, uint newQuantity);
+    event ProductSold(bytes32 id, bytes32 storeId, uint quantity, uint totalPrice);
     event BalanceWithdrawn(bytes32 storeId, uint total);
 
     // Constructor
@@ -197,37 +209,51 @@ contract StoreManager{
     }
 
     // Function to transfer ether from buyer to store owner
-    function BuyProduct(bytes32 id, bytes32 storeId, uint quantity, uint totalPrice, uint newQuantity) payable public {
+    function BuyProduct(bytes32 id, bytes32 storeId, uint quantity) payable public {
 	
         // Perform checks
         Product memory product = productsMappedToId[id];
-        require(totalPrice == (quantity * productsMappedToId[id].pricePerUnit), "Insufficient Funds Sent");
+        uint totalAmount = product.pricePerUnit * quantity;
+        require(msg.value >= totalAmount, "Insufficient Funds Sent");
         require(msg.sender.balance >= msg.value, "Insufficient Funds In Account");
-        require(product.availableUnits >= quantity, "Quantity Needed Is Larger Than Available");
-
+		require(product.availableUnits >= quantity, "Quantity Needed Is Larger Than Available");
+        
         // Give change to message sender
-        if(msg.value > totalPrice){
-            uint change = msg.value - totalPrice;
-            msg.sender.transfer(change);
+        if(msg.value > totalAmount){
+            uint change = msg.value - totalAmount;
+            require(msg.sender.send(change));
         }
 
         // Process transactions
-        productsMappedToId[id].availableUnits = newQuantity;
-        storesMappedToId[storeId].balance += totalPrice;
-        emit ProductSold(id, storeId, quantity, totalPrice, newQuantity);
+        productsMappedToId[id].availableUnits = product.availableUnits - quantity;
+        storesMappedToId[storeId].balance += totalAmount;
+        emit ProductSold(id, storeId, quantity, totalAmount);
+
+        // Create receipt and store it
+        bytes32 receiptId = keccak256(abi.encodePacked(msg.sender, id, quantity, totalAmount, msg.sender, now));
+        Receipt memory receipt = Receipt(receiptId, id, quantity, totalAmount, msg.sender);
+
+        // Put receipt in respective arrays
+        receiptsMappedToStore[storeId].push(receipt.id);
+        receiptsMappedToId[receipt.id] = receipt;
+        receipts.push(receipt.id);
+    }
+
+    function() external payable {
+    // nothing to do
     }
 
     // Function to withdraw store balance and send to owner
     function WithdrawStoreBalance(bytes32 id) RequireManagerStatus RequireStoreOwnerStatus(id)  public{        
 
         // Check if store balance is greater than 0
-        require(storesMappedToId[id].balance > 0, "Store Balance Is 0");
+        uint balance = storesMappedToId[id].balance;
+        require(balance > 0, "Store Balance Is 0");
 
         // Transfer store balance to store owner
-        uint balance = storesMappedToId[id].balance;
-        msg.sender.transfer(balance);
-        emit BalanceWithdrawn(id, balance);
         storesMappedToId[id].balance = 0;
+        require(msg.sender.send(balance));
+        emit BalanceWithdrawn(id, balance);
     }
 
     // Function to check if message sender is a manager

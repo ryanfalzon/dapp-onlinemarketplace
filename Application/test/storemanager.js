@@ -223,7 +223,7 @@ contract('StoreManager', function(accounts) {
 		return StoreManager.deployed().then(instance => {
             return instance.CreateStore('Range Rover', 'Description', 'Image URL', {from: firstManagerAddress}).then(firstResponse => {
                 return instance.CreateProduct(firstResponse.logs[0].args[0], 'Evoque', 'Description', 'Image URL', 10, 100, {from: firstManagerAddress}).then(secondResponse => {
-                    return instance.BuyProduct(secondResponse.logs[0].args[0], secondResponse.logs[0].args[1], 1, 10, 99, {from: externalAddress, value: 10});
+                    return instance.BuyProduct(secondResponse.logs[0].args[0], secondResponse.logs[0].args[1], 1, {from: externalAddress, value: 10});
                 })
                 .then(() => {
                     assert.fail();
@@ -239,7 +239,7 @@ contract('StoreManager', function(accounts) {
 		return StoreManager.deployed().then(instance => {
             return instance.CreateStore('Range Rover', 'Description', 'Image URL', {from: firstManagerAddress}).then(firstResponse => {
                 return instance.CreateProduct(firstResponse.logs[0].args[0], 'Evoque', 'Description', 'Image URL', 10, 100, {from: firstManagerAddress}).then(secondResponse => {
-                    return instance.BuyProduct(secondResponse.logs[0].args[0], secondResponse.logs[0].args[1], 1, 11, 99, {from: externalAddress, value: web3.utils.toWei(10)});
+                    return instance.BuyProduct(secondResponse.logs[0].args[0], secondResponse.logs[0].args[1], 1, {from: externalAddress, value: 9});
                 })
                 .then(() => {
                     assert.fail();
@@ -255,7 +255,7 @@ contract('StoreManager', function(accounts) {
         return StoreManager.deployed().then(instance => {
             return instance.CreateStore('Range Rover', 'Description', 'Image URL', {from: firstManagerAddress}).then(firstResponse => {
                 return instance.CreateProduct(firstResponse.logs[0].args[0], 'Evoque', 'Description', 'Image URL', 10, 100, {from: firstManagerAddress}).then(secondResponse => {
-                    return instance.BuyProduct(secondResponse.logs[0].args[0], secondResponse.logs[0].args[1], 1, 10, 99, {from: externalAddress, value: web3.utils.toWei(101)}).then(r => {
+                    return instance.BuyProduct(secondResponse.logs[0].args[0], secondResponse.logs[0].args[1], 1, {from: externalAddress, value: web3.utils.toWei(101)}).then(r => {
                         console.log(r);
                     });
                 })
@@ -273,7 +273,7 @@ contract('StoreManager', function(accounts) {
 		return StoreManager.deployed().then(instance => {
             return instance.CreateStore('Range Rover', 'Description', 'Image URL', {from: firstManagerAddress}).then(firstResponse => {
                 return instance.CreateProduct(firstResponse.logs[0].args[0], 'Evoque', 'Description', 'Image URL', 10, 100, {from: firstManagerAddress}).then(secondResponse => {
-                    return instance.BuyProduct(secondResponse.logs[0].args[0], secondResponse.logs[0].args[1], 101, 10, -1, {from: externalAddress, value: 10});
+                    return instance.BuyProduct(secondResponse.logs[0].args[0], secondResponse.logs[0].args[1], 101, {from: externalAddress, value: 10});
                 })
                 .then(() => {
                     assert.fail();
@@ -289,7 +289,7 @@ contract('StoreManager', function(accounts) {
         return StoreManager.deployed().then(instance => {
             return instance.CreateStore('Range Rover', 'Description', 'Image URL', {from: firstManagerAddress}).then(firstResponse => {
                 return instance.CreateProduct(firstResponse.logs[0].args[0], 'Evoque', 'Description', 'Image URL', 10, 100, {from: firstManagerAddress}).then(secondResponse => {
-                    return instance.BuyProduct(secondResponse.logs[0].args[0], secondResponse.logs[0].args[1], 1, 10, 99, {from: externalAddress, value: 10}).then(() => {
+                    return instance.BuyProduct(secondResponse.logs[0].args[0], secondResponse.logs[0].args[1], 1, {from: externalAddress, value: 10}).then(() => {
                         return instance.WithdrawStoreBalance(secondResponse.logs[0].args[1], {from: firstManagerAddress});
                     })
                     .then(() => {
@@ -307,7 +307,7 @@ contract('StoreManager', function(accounts) {
         return StoreManager.deployed().then(instance => {
             return instance.CreateStore('Range Rover', 'Description', 'Image URL', {from: firstManagerAddress}).then(firstResponse => {
                 return instance.CreateProduct(firstResponse.logs[0].args[0], 'Evoque', 'Description', 'Image URL', 10, 100, {from: firstManagerAddress}).then(secondResponse => {
-                    return instance.BuyProduct(secondResponse.logs[0].args[0], secondResponse.logs[0].args[1], 1, 10, 99, {from: externalAddress, value: 10}).then(() => {
+                    return instance.BuyProduct(secondResponse.logs[0].args[0], secondResponse.logs[0].args[1], 1, {from: externalAddress, value: 10}).then(() => {
                         return instance.WithdrawStoreBalance(secondResponse.logs[0].args[1], {from: externalAddress});
                     })
                     .then(() => {
@@ -325,7 +325,7 @@ contract('StoreManager', function(accounts) {
         return StoreManager.deployed().then(instance => {
             return instance.CreateStore('Range Rover', 'Description', 'Image URL', {from: firstManagerAddress}).then(firstResponse => {
                 return instance.CreateProduct(firstResponse.logs[0].args[0], 'Evoque', 'Description', 'Image URL', 10, 100, {from: firstManagerAddress}).then(secondResponse => {
-                    return instance.BuyProduct(secondResponse.logs[0].args[0], secondResponse.logs[0].args[1], 1, 10, 99, {from: externalAddress, value: 10}).then(() => {
+                    return instance.BuyProduct(secondResponse.logs[0].args[0], secondResponse.logs[0].args[1], 1, {from: externalAddress, value: 10}).then(() => {
                         return instance.WithdrawStoreBalance(secondResponse.logs[0].args[1], {from: secondManagerAddress});
                     })
                     .then(() => {
