@@ -31,9 +31,11 @@ A factory contract is essentially enables the deployment of child contracts also
 
 In this project, the factory contract was note utilized mainly because the data of the assets, such as the store owner, was not going to be changed. Hence a mapping design was adopted were for instance stores were defined as follows:
 
-    bytes32[] private allStores;
-    mapping(address => bytes32[]) public storesMappedToOwner;
-    mapping(bytes32 => Store) public storesMappedToId;
+```bash
+bytes32[] private allStores;
+mapping(address => bytes32[]) public storesMappedToOwner;
+mapping(bytes32 => Store) public storesMappedToId;
+```
     
 ### Use
 
@@ -60,23 +62,27 @@ Mappings in solidity are considered to be extremely useful. Essentially they are
 
 Consider the following mapping:
 
-    mapping(address => bytes32[]) public storesMappedToOwner;
+```bash
+mapping(address => bytes32[]) public storesMappedToOwner;
+```
 
 A mapping iterator for that mapping would look as follows:
 
-    // Mapping iterator for stores
-    function GetStoreCount(address manager) view public returns (uint){
-        return storesMappedToOwner[manager].length;
-    }
-    function GetStoreElementAtIndex(address manager, uint index) view public returns (bytes32, address, string memory, string memory, string memory, uint){
-        bytes32[] memory stores = storesMappedToOwner[manager];
-        Store memory store = storesMappedToId[stores[index]];
-        return (store.id, store.owner, store.name, store.description, store.imageUrl, store.balance);
-    }
-    function GetStoreElement(bytes32 id) view public returns (bytes32, address, string memory, string memory, string memory, uint){
-        Store memory store = storesMappedToId[id];
-        return (store.id, store.owner, store.name, store.description, store.imageUrl, store.balance);
-    }
+```bash
+// Mapping iterator for stores
+function GetStoreCount(address manager) view public returns (uint){
+    return storesMappedToOwner[manager].length;
+}
+function GetStoreElementAtIndex(address manager, uint index) view public returns (bytes32, address, string memory, string memory, string memory, uint){
+    bytes32[] memory stores = storesMappedToOwner[manager];
+    Store memory store = storesMappedToId[stores[index]];
+    return (store.id, store.owner, store.name, store.description, store.imageUrl, store.balance);
+}
+function GetStoreElement(bytes32 id) view public returns (bytes32, address, string memory, string memory, string memory, uint){
+    Store memory store = storesMappedToId[id];
+    return (store.id, store.owner, store.name, store.description, store.imageUrl, store.balance);
+}
+```
 
 This process was created for all mappings in the developed smart contracts.
 
@@ -94,15 +100,17 @@ The difference between these two is that the first one will throw an exception i
 
 The withdrawal pattern helped in the development since it exposes the `WithdrawStoreBalance()` function and refunds the stores on demand, rather than refunding the stores in one call. The code snippet below illustrates this:
 
-    // Function to withdraw store balance and send to owner
-    function WithdrawStoreBalance(bytes32 id) RequireManagerStatus RequireStoreOwnerStatus(id)  public{        
+```bash
+// Function to withdraw store balance and send to owner
+function WithdrawStoreBalance(bytes32 id) RequireManagerStatus RequireStoreOwnerStatus(id)  public{        
 
-        // Check if store balance is greater than 0
-        uint balance = storesMappedToId[id].balance;
-        require(balance > 0, "Store Balance Is 0");
+    // Check if store balance is greater than 0
+    uint balance = storesMappedToId[id].balance;
+    require(balance > 0, "Store Balance Is 0");
 
-        // Transfer store balance to store owner
-        storesMappedToId[id].balance = 0;
-        require(msg.sender.send(balance));
-        emit BalanceWithdrawn(id, balance);
-    }
+    // Transfer store balance to store owner
+    storesMappedToId[id].balance = 0;
+    require(msg.sender.send(balance));
+    emit BalanceWithdrawn(id, balance);
+}
+```
