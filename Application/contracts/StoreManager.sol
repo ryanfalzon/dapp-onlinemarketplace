@@ -238,7 +238,7 @@ contract StoreManager{
         Receipt memory receipt = Receipt(receiptId, id, quantity, totalAmount, msg.sender);
 
         // Put receipt in respective arrays
-        receiptsMappedToOwner[msg.sender].push(receipt.id);
+        receiptsMappedToOwner[storesMappedToId[storeId].owner].push(receipt.id);
         receiptsMappedToId[receipt.id] = receipt;
     }
 

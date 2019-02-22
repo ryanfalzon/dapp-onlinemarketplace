@@ -195,6 +195,7 @@ const App = {
       const { GetAllReceipts } = this.storeManager.methods;
       const allReceipts = await GetAllReceipts(this.account).call({ from: this.account });
       const receiptList = [];
+      console.log(allReceipts);
 
       // Get receipt objects
       for(let i = 0; i < allReceipts.length; i++){
@@ -203,19 +204,19 @@ const App = {
         receiptList.push(receiptObject);
       }
 
+      console.log(receiptList);
+
       document.getElementById('receiptTable').innerHTML = '';
-      var innerHtml = '';
       receiptList.forEach(function (receipt) {
-           innerHtml += `
+        document.getElementById('receiptTable').innerHTML += `
             <tr>
               <td>${receipt.buyer}</td>
               <td>${receipt.productId}</td>
               <td>${receipt.quantity}</td>
-              <td>${receipt.totalPrice}</td>
+              <td>${web3.fromWei(receipt.totalPrice)}</td>
             </tr>
           `;
       });
-      document.getElementById('storeList').innerHTML += '<tbody>' + innerHtml + '</tbody>';
     }
     catch(error){
       console.error(error);
