@@ -189,6 +189,39 @@ const App = {
     }
   },
 
+  refreshReceipts: async function(){
+    try{
+      // Get all receipts for store
+      const { GetAllReceipts } = this.storeManager.methods;
+      const allReceipts = await GetAllReceipts(this.account).call({ from: this.account });
+      const receiptList = [];
+
+      // Get receipt objects
+      for(let i = 0; i < allReceipts.length; i++){
+        const { receiptsMappedToId  } = App.storeManager.methods;
+        const receiptObject = await receiptsMappedToId(allReceipts[i]).call({from: this.account});
+        receiptList.push(receiptObject);
+      }
+
+      document.getElementById('receiptTable').innerHTML = '';
+      var innerHtml = '';
+      receiptList.forEach(function (receipt) {
+           innerHtml += `
+            <tr>
+              <td>${receipt.buyer}</td>
+              <td>${receipt.productId}</td>
+              <td>${receipt.quantity}</td>
+              <td>${receipt.totalPrice}</td>
+            </tr>
+          `;
+      });
+      document.getElementById('storeList').innerHTML += '<tbody>' + innerHtml + '</tbody>';
+    }
+    catch(error){
+      console.error(error);
+    }
+  },
+
   refreshOwnerStoreList: async function (page) {
     try {
       // Get all managers that were ever created
@@ -467,6 +500,7 @@ window.addEventListener("hashchange", async function(){
     if(response === true){
       document.getElementById('content').innerHTML = ManageStoresView;
       await App.refreshOwnerStoreList('manageStores');
+      await App.refreshReceipts();
     }
     else{
       document.getElementById('content').innerHTML = ForbiddenView;

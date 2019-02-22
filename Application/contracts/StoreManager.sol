@@ -38,13 +38,12 @@ contract StoreManager{
     address payable private administrator;
     Marketplace private marketplace;
     bytes32[] private allStores;
-    bytes32[] private receipts;
     mapping(address => bytes32[]) public storesMappedToOwner;
     mapping(bytes32 => Store) public storesMappedToId;
     mapping(bytes32 => bytes32[]) public productsMappedToStore;
     mapping(bytes32 => Product) public productsMappedToId;
     mapping(bytes32 => Receipt) public receiptsMappedToId;
-    mapping(bytes32 => bytes32[]) public receiptsMappedToStore;
+    mapping(address => bytes32[]) public receiptsMappedToOwner;
 
     // Mapping iterator for stores
     function GetStoreCount(address manager) view public returns (uint){
@@ -162,6 +161,11 @@ contract StoreManager{
         return storesMappedToOwner[storeOwner];
     }
 
+    // Function to get all receipts for a store
+    function GetAllReceipts(address storeOwner) RequireManagerStatus view public returns(bytes32[] memory){
+        return receiptsMappedToOwner[storeOwner];
+    }
+
     // Function to return all stores
     function GetAllStores() view public returns(bytes32[] memory){
         return allStores;
@@ -234,13 +238,8 @@ contract StoreManager{
         Receipt memory receipt = Receipt(receiptId, id, quantity, totalAmount, msg.sender);
 
         // Put receipt in respective arrays
-        receiptsMappedToStore[storeId].push(receipt.id);
+        receiptsMappedToOwner[msg.sender].push(receipt.id);
         receiptsMappedToId[receipt.id] = receipt;
-        receipts.push(receipt.id);
-    }
-
-    function() external payable {
-    // nothing to do
     }
 
     // Function to withdraw store balance and send to owner
@@ -256,6 +255,11 @@ contract StoreManager{
         emit BalanceWithdrawn(id, balance);
     }
 
+    // Fallback function
+    function() external {
+        revert("Please use the correct function name");
+    }
+
     // Function to check if message sender is a manager
     modifier RequireManagerStatus(){
         require(marketplace.CheckManager(msg.sender) == true);
@@ -268,6 +272,7 @@ contract StoreManager{
         _;
     }
 
+    // Function to check if message sender is the contract owner
     modifier RequireContractOwnerStatus(){
         require(msg.sender == administrator);
         _;

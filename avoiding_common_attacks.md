@@ -36,6 +36,35 @@ To prevent against overflows and underflows, a number of checks are being perfor
 
 ## Delegatecall
 
+### Definition
+
+Delegate calls are beneficial since they enable the developers to implement libraries and modular code. However, this brings with it some drawbacks, mainly because such functionality allows **anyone** to do **whatever they want** with their state. This was the root problem of the *Parity Hack*, were a mixture of misused visibility modifiers and delegate calls enabled a malicious user to take control and ownership of a contract which had a substantial amount of ether.
+
+### Prevention
+
+For the scope of this assignment, no delegaste calls were used. Despite the fact that almost all function have a `public` access modifier to them, custom modifiers were added to all functions to limit the access of functions to different tiers of users. The custom modifiers used were the following:
+
+```bash
+// Function to check if message sender is a manager
+modifier RequireManagerStatus(){
+    require(marketplace.CheckManager(msg.sender) == true);
+    _;
+}
+
+// Function to check if message sender is the store owner
+modifier RequireStoreOwnerStatus(bytes32 storeId){
+    require(storesMappedToId[storeId].owner == msg.sender);
+    _;
+}
+
+modifier RequireContractOwnerStatus(){
+    require(msg.sender == administrator);
+    _;
+}
+```
+
+Moreover, for those functions that do not effect teh state of the smart contract and are soleoly there to read data, the keyword `view` was added to them.
+
 ## Reentrancy
 
 ### Definition
@@ -53,9 +82,33 @@ Neverthless, if one wants to defend form such a threat, the following convention
 
 ### Definition
 
+Whenever value is sent to the smart contract, it must be processed by either evaluating the fallback function, or another function in the contract marked as payable. However, there is one exception to this, calling the `selfdestruct()` function. This function does two things:
+
+1. Renders the contract useless sinc eit removes all the bytecode at that address;
+2. Sends all teh contract's currency, to a target address.
+
+Since the money is sent to a contract address, the fallback function **does not** get executed and thus it would have unexpected ether.
+
 ### Prevention
 
+Such an attacks is mostly exploited by having a **conditional statement** that is soleoly based on having the contract's **balance** below a certain amount since this would be **easily bypassed**. Therefore, having said this, the most effective solution to such an attack is not having a condition based on the balance. In the case where an exact amount of ether is required, a variable tracking the deposited ether should be created.
+
 ## Call To The Unknown
+
+### Definition
+
+This security vulnerability comes from the fallback function of a contract, that in certain conditions could be dangerous. The fallback function is called anytime a caller of a smart contract invokes certain functionor transfers ether to another smart contract.
+
+### Prevention
+
+In thie case of this assignment, the fallback function is used to revert any invalid calls that are made to the smart contract. Since no code is placed in the fallback function, the smart contract is safe from such an attack.
+
+```bash
+// Fallback function
+function() external {
+    revert("Please use the correct function name");
+}
+```
 
 ## Short Address Attack
 
