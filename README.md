@@ -5,8 +5,8 @@
 This application has three types of users:
 
 1. Administrator - The creator of the smart contract;
-2. Store Manager - Able to create stores and products
-3. Normal User - Able to browse the marketplace
+2. Store Manager - Able to create stores and products;
+3. Normal User - Able to browse the marketplace;
 
 When the administrator open the web application, he would have access to the administrator functions, which enable him to add, remove and view the current store store managers. Whenever the administrator adds a new address to the manager list, that address would have access to the store manager functions.
 
