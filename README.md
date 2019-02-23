@@ -2,6 +2,8 @@
 
 # User Stories
 
+**[!VIDEO DEMO AND CODE EXPLANATION HERE!](https://www.youtube.com/watch?v=pxO5hFH9J8E)**
+
 This application has three types of users:
 
 1. Administrator - The creator of the smart contract;
